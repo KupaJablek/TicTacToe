@@ -4,11 +4,10 @@ Play Tic Tac Toe in the terminal.
 
 ## Download
 
-Run: 
+Clone this repo with:
 
 `git clone https://github.com/KupaJablek/TicTacToe_f90.git` 
 
-wherever you'd like to store Tic Tac Toe
 
 ## Play
 
@@ -18,4 +17,18 @@ Run the binary with:
 
 ## Why fortran90?
 
-I thought it would be fun.
+I thought it would be funny.
+
+## Make Commands
+
+Build a new binary with:
+
+`make build`
+
+Delete the existing binary with:
+
+`make clean`
+
+Rebuild your binary with:
+
+`make rebuild`

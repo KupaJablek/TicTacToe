@@ -2,6 +2,8 @@ module helper_functions
 contains
     ! will return a board populated with 'empty' squares 
     function initialize_board(c)
+        implicit none
+
         character, dimension(3, 3) :: c_b = " ", initialize_board
         character :: c
         integer :: i, j
@@ -26,22 +28,36 @@ contains
         integer :: play_game, win_condition !0:tie, 1:p1, 2:p2
 
         ! create new gameboard
-        fill_board = "*"
+        fill_board = " "
         c_board = initialize_board(fill_board)
 
         ! set first player
         current_player = .True. ! p1 is the starting player 
 
         ! main gameplay loop
-        do while(game_over .neqv. .True.)
+        do while(game_over .eqv. .False.)
+            call clear_terminal()
+            call print_board(c_board) 
+
+            if (current_player) then
+                print *, "Player 1's turn"
+            else
+                print *, "Player 2's turn"
+            end if
             ! player turn
             call take_turn(c_board, current_player)
+
+            current_player = .not. current_player
 
             ! check for win or tie
             win_condition = check_win_condition(c_board)
             if (win_condition /= -1) then
                 ! GAMEOVER
                 print *, 'GAMEOVER'
+                call clear_terminal()
+
+                call print_board(c_board)
+
                 game_over = .True.
             end if
         end do
@@ -54,8 +70,11 @@ contains
         implicit none
 
         character, dimension(3, 3) :: board 
-        logical :: c_player, valid_input = .False.
+        logical :: c_player, valid_input 
         integer :: xInput, yInput
+
+        ! reset valid_input to false.
+        valid_input = .false.
 
         do while(.not. valid_input)
             ! get user input
@@ -66,9 +85,13 @@ contains
             read *, yInput
 
             ! check if input valid
+            if (3 < xInput .or. xInput < 1 .or. 3 < yInput .or. yInput < 1) then
+                print *, 'Enter a position between 1 and 3'
+                continue
+            end if
 
             ! check if space is taken
-            if (board(xInput, yInput) /= "O" .or. board(xInput, yInput) /= "X") then
+            if (board(xInput, yInput) /= "O" .and. board(xInput, yInput) /= "X") then
                 valid_input = .true.
             else
                 print *, "Space is already taken"
@@ -133,11 +156,14 @@ contains
         CHARACTER, dimension(3,3) :: b
         INTEGER :: i, j
 
+        print *, "  1 2 3"
+        print *, " +-+-+-+"
         do i = 1, 3
-            do j = 1, 3
-                print *, "array at", i, ",", j, "=",b(i,j) 
-            end do
+            write (*, 100) i, (" |"//b(i,1)//"|"//b(i,2)//"|"//b(i,3)//"| "), i
+            100 format (I1,A,I1)
+            print *, "  +-+-+-+"
         end do
+        print *, ""
     end subroutine print_board
 
     subroutine clear_terminal()
@@ -166,5 +192,13 @@ program tictactoe
     read *, p2_name
 
     winner = play_game(p1_name, p2_name)
+
+    if (winner == 0) then
+        print *, "TIE GAME"
+    else if (winner == 1) then
+        print *, "Winner is ", p1_name
+    else if (winner == 2) then
+        print *, "Winner is ", p2_name
+    end if
 
 end program tictactoe
