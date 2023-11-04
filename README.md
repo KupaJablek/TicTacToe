@@ -20,6 +20,7 @@ Run the binary with:
 I thought it would be funny.
 
 ## Make Commands
+- **gfortran** is required to run make commands
 
 Build a new binary with:
 
